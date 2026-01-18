@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Masters Fantasy Draft</title>
+    <link rel="stylesheet" href="mastersDraft.css">
+</head>
+<body>
+
+    <!-- STICKY TOP SECTION -->
+    <div class="fixed-controls-header">
+        <div class="header-content-wrapper">
+            <h1>2026 Masters Fantasy Draft</h1>
+
+            <!-- Setup Controls Section -->
+            <div id="setup-controls">
+                <h2>Start New Draft</h2>
+                <div class="input-group">
+                    <label for="draftMaster">Commissioner:</label>
+                    <input type="text" id="draftMaster" required>
+                    
+                    <label for="roundsTotal">Rounds:</label>
+                    <input type="number" id="roundsTotal" value="10" min="1" style="width: 50px;">
+                </div>
+                <div class="input-group" style="margin-top: 10px;">
+                    <label for="bettorNamesInput">Bettors:</label>
+                    <input type="text" id="bettorNamesInput" placeholder="Name 1, Name 2" style="width: 300px;" required>
+                    <button class="btn-primary" onclick="initializeDraftOrder()">Start Draft</button>
+                </div>
+            </div>
+
+            <!-- Draft Controls Section -->
+            <div id="draft-controls" style="display: none;">
+                <div class="draft-info-grid">
+                    <div id="current-picker-div">
+                        <span class="label">Current Picker:</span>
+                        <h2 id="current-bettor-display">---</h2>
+                    </div>
+                    <div id="next-picker-div">
+                        <p><strong>Next:</strong> <span id="next-up-display">-</span> | <strong>On Deck:</strong> <span id="on-deck-display">-</span></p><strong>In Hole:</strong>-<span id="in-the-hole-display">-</span>
+                    </div>
+                </div>
+                 <br>
+                <div class="action-bar">
+                    <datalist id="golfer-names"></datalist>
+                    <input list="golfer-names" id="golfer-choice" placeholder="Search Golfer...">
+                    <button class="btn-record" id="record-pick-button" onclick="recordCurrentPick()">Record Pick</button>
+                    <button class="btn-undo" type="button" id="undo-button" onclick="undoLastPick()">Undo</button>
+                    <button class="btn-finish" type="button" id="finish-draft-button" onclick="finishAndClearDraft()" style="display: none;">Finish Draft</button>
+                </div>
+                <br><br>
+                <div id="last-pick-display"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN SCROLLABLE CONTENT -->
+    <div class="content-container-offset">
+        <h3>Draft Board</h3>
+        <table id="draft-table">
+            <thead>
+                <tr>
+                    <th>Pick #</th>
+                    <th>Round</th>
+                    <th>Bettor</th>
+                    <th>Golfer</th>
+                </tr>
+            </thead>
+            <tbody id="draft-board-body">
+                <!-- Rows injected by JS -->
+            </tbody>
+        </table>
+    </div>
+    <br><br>
+
+    <script src="mastersDraft.js"></script>
+</body>
+</html>

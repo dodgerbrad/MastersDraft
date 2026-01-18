@@ -1,0 +1,118 @@
+/* General Styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* FIXED HEADER SETUP */
+.fixed-controls-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  z-index: 1000;
+  padding: 15px 0;
+}
+
+/* CENTERS THE CONTROLS */
+.header-content-wrapper {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+/* CONTENT OFFSET (Prevents table from being hidden behind header) */
+.content-container-offset {
+  max-width: 900px;
+  margin: 280px auto 50px; /* Adjust 280px if your header is taller/shorter */
+  padding: 0 20px;
+}
+
+/* HEADERS */
+h1 {
+  color: #046738; /* Masters Green */
+  margin: 0 0 10px 0;
+  font-size: 1.5rem;
+  text-transform: uppercase;
+}
+
+/* DRAFT BOARD TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+th {
+  background-color: #046738;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+tr:nth-child(even) { background-color: #f2f2f2; }
+
+/* BUTTONS & INPUTS */
+.input-group label { font-weight: bold; margin-right: 5px; }
+input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+
+.btn-primary { background: #046738; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+.btn-record { background: #046738; color: white; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; }
+.btn-undo { background: #d9534f; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; margin-left: 5px; }
+
+/* DRAFT INFO GRID */
+.draft-info-grid {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: #f0f7f3;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.label { font-size: 0.8rem; color: #666; display: block; text-transform: uppercase; }
+#current-bettor-display { margin: 0; color: #046738; }
+
+/* Styling for the pre-filled rows */
+.golfer-cell {
+  color: #888;
+  font-style: italic;
+}
+
+/* Styling for a row once it has been picked */
+.completed-pick {
+  background-color: #e8f5e9 !important; /* Very light green */
+}
+
+.completed-pick .golfer-cell {
+  color: #046738; /* Masters Green */
+  font-style: normal;
+  font-weight: bold;
+}
+
+
+
+#draft-table {
+  border-collapse: separate; 
+  border-spacing: 0;
+  width: 100%;
+}
+
+/* Make sure the main table body has the right offset too */
+#draft-board-body tr {
+  scroll-margin-top: 300px; /* Keep this here as well */
+}
