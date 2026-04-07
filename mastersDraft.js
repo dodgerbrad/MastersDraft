@@ -43,7 +43,7 @@ async function fetchGolfers() {
         const response = await fetch(SCRIPT_URL + "?page=draft");
         const data = await response.json();
         
-        // row[0] is the Name, row[1] is the Flag filename
+        // Maps [[Name, Flag], ...] to [{name: Name, flag: Flag}, ...]
         availableGolfers = data.golfers.map(row => ({
             name: row[0],
             flag: row[1] || 'default.png'
@@ -51,7 +51,7 @@ async function fetchGolfers() {
         
         existingMasters = data.existingMasters; 
         
-        // Pass ONLY the names (strings) to the datalist so they show up
+        // Pass ONLY the names to populate the dropdown
         populateDatalist(availableGolfers.map(g => g.name));
         
         saveDraftToLocal();
@@ -60,6 +60,7 @@ async function fetchGolfers() {
         console.error("Error fetching golfers:", error);
     }
 }
+
 
 
 
