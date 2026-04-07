@@ -72,6 +72,7 @@ input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 .btn-primary { background: #046738; color: white; border: none; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
 .btn-record { background: #046738; color: white; border: none; padding: 10px 20px; font-weight: bold; cursor: pointer; border-radius: 4px; }
 .btn-undo { background: #d9534f; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; margin-left: 5px; }
+.btn-finish { background: green; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; margin-left: 5px; }
 
 /* DRAFT INFO GRID */
 .draft-info-grid {
