@@ -130,14 +130,10 @@ function onSearchInput() {
     
     dropdown.innerHTML = '';
 
-    if (!filter) {
-        dropdown.style.display = 'none';
-        return;
-    }
-
-    const matches = availableGolfers.filter(g => 
-        g.name.toLowerCase().includes(filter)
-    );
+    // If filter is empty, show EVERYTHING; otherwise, show MATCHES
+    const matches = filter === '' 
+        ? availableGolfers 
+        : availableGolfers.filter(g => g.name.toLowerCase().includes(filter));
 
     if (matches.length > 0) {
         matches.forEach(golfer => {
@@ -152,7 +148,9 @@ function onSearchInput() {
             div.style.backgroundColor = 'white';
 
             div.innerHTML = `
-                <img src="flags/${golfer.flag}" style="width: 20px; height: auto; border-radius: 2px;">
+                <img src="flags/${golfer.flag}" 
+                     onerror="this.onerror=null; this.src='flags/default.png';" 
+                     style="width: 20px; height: auto; border-radius: 2px;">
                 <span style="color: black;">${golfer.name}</span>
             `;
 
@@ -168,86 +166,6 @@ function onSearchInput() {
     } else {
         dropdown.style.display = 'none';
     }
-}
-
-// Close dropdown if clicked outside
-document.addEventListener('click', (e) => {
-    const dropdown = document.getElementById('custom-dropdown');
-    const input = document.getElementById('golfer-choice');
-    if (e.target !== input && e.target !== dropdown) {
-        dropdown.style.display = 'none';
-    }
-});
-
-/**
- * 4. RECORD PICK & INJECT FLAG INTO TABLE
- */
-async function recordCurrentPick() {
-    const golferInput = document.getElementById('golfer-choice');
-    const selectedName = golferInput.value;
-
-    const golferObj = availableGolfers.find(g => g.name === selectedName);
-
-    if (!selectedName || !golferObj) {
-        alert("Invalid or already drafted golfer selected.");
-        return;
-    }
-
-    setRecordButtonState(true);
-    saveStateToHistory();
-
-    const currentBettorName = draftOrder[currentPickIndex];
-    const pickNumber = currentPickIndex + 1;
-    const roundNumber = Math.floor(currentPickIndex / bettors.length) + 1;
-
-    const currentRow = document.getElementById(`pick-row-${currentPickIndex}`);
-    if (currentRow) {
-        const golferCell = currentRow.querySelector('.golfer-cell');
-        if (golferCell) {
-            golferCell.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <img src="flags/${golferObj.flag}" style="width: 20px; height: auto;">
-                    <span>${golferObj.name}</span>
-                </div>
-            `;
-        }
-        currentRow.classList.add('completed-pick');
-        currentRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    const lastPickDisplay = document.getElementById('last-pick-display');
-    if (lastPickDisplay) {
-        lastPickDisplay.innerHTML = `<strong>Last Pick:</strong> ${golferObj.name} by ${currentBettorName}`;
-    }
-
-    const pickData = {
-        action: "add",
-        draftMaster: document.getElementById('draftMaster').value,
-        bettorName: currentBettorName,
-        pickNum: pickNumber,
-        round: roundNumber,
-        golferName: golferObj.name,
-        flag: golferObj.flag 
-    };
-
-    try {
-        await fetch(SCRIPT_URL, {
-            method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify(pickData)
-        });
-    } catch (e) { console.error(e); }
-
-    availableGolfers = availableGolfers.filter(g => g.name !== selectedName);
-
-    currentPickIndex++;
-    golferInput.value = '';
-    refreshAllDisplays();
-    setRecordButtonState(false);
-    updateUndoButtonState();
-    saveDraftToLocal();
-    golferInput.focus();
 }
 
 /**
