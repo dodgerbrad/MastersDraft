@@ -143,3 +143,26 @@ input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 
 .dropdown-item img { width: 24px; height: auto; }
 
+.search-wrapper {
+    position: relative; /* Essential for absolute positioning of dropdown */
+}
+
+.dropdown-content {
+    position: absolute;
+    top: 100%; /* Sits right below the input */
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 9999; /* Ensures it stays on top of the table */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.dropdown-item:hover {
+    background-color: #f0fdf4; /* Light green hover */
+}
+
+
