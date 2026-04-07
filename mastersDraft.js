@@ -248,14 +248,18 @@ function loadDraftFromLocal() {
 function populateDatalist(names) {
     const datalist = document.getElementById('golfer-names');
     if (!datalist) return;
-    datalist.innerHTML = ''; // Clear old entries
+    
+    datalist.innerHTML = ''; // Clear old "ghost" options
     
     names.forEach(name => {
-        let option = document.createElement('option');
-        option.value = name; // This is what shows in the dropdown
-        datalist.appendChild(option);
+        if (name) {
+            let option = document.createElement('option');
+            option.value = name; // This MUST be set for the name to appear
+            datalist.appendChild(option);
+        }
     });
 }
+
 
 
 function refreshAllDisplays() {
