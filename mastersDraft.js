@@ -2,7 +2,7 @@
  * GOLF FANTASY DRAFT LOGIC (2026) - Updated with Flags & Custom Dropdown
  */
 
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwl3HomxeKLcRdfrzmlzY469q7TUMDnZd6wHUJrk3vK0bweXxmXmPbnvZNEVhVwvItvQQ/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhmMVgaZSypaomfxz6ip2a3UZ8GNiLa-9otCgTLfRfwshDSk4HdnySFVXboiCl69KbbA/exec";
 const STORAGE_KEY = "mastersDraftProgress_2026";
 
 // Draft State Variables
