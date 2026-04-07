@@ -280,8 +280,8 @@ function finishAndClearDraft() {
     window.location.href = window.location.pathname; 
 }
 
-window.initializeDraftOrder = initializeDraftOrder;
-window.undoLastPick = undoLastPick;
 window.recordCurrentPick = recordCurrentPick;
 window.onSearchInput = onSearchInput;
+window.initializeDraftOrder = initializeDraftOrder;
+window.undoLastPick = undoLastPick;
 window.finishAndClearDraft = finishAndClearDraft;
