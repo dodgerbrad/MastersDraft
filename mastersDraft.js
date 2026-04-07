@@ -1,5 +1,5 @@
 /**
- * GOLF FANTASY DRAFT LOGIC (2026) - Updated with Flags
+ * GOLF FANTASY DRAFT LOGIC (2026) - Updated with Flags & Custom Dropdown
  */
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwl3HomxeKLcRdfrzmlzY469q7TUMDnZd6wHUJrk3vK0bweXxmXmPbnvZNEVhVwvItvQQ/exec";
@@ -11,7 +11,7 @@ let totalRounds = 0;
 let currentPickIndex = 0;
 let draftOrder = [];
 let totalPicks = 0;
-let availableGolfers = []; // Now stores objects: { name, flag }
+let availableGolfers = []; // Stores objects: { name, flag }
 let draftHistory = []; 
 let existingMasters = [];
 
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (restored && bettors.length > 0) {
         setup.style.display = 'none';
         draft.style.display = 'block';
-        
         updateUndoButtonState();
         refreshAllDisplays();
     } else {
@@ -43,29 +42,20 @@ async function fetchGolfers() {
         const response = await fetch(SCRIPT_URL + "?page=draft");
         const data = await response.json();
         
-        // Map the Array(2) to the object format our script uses
+        // Map the Array(2) from Apps Script into objects: {name, flag}
         availableGolfers = data.golfers.map(row => ({
-            name: row[0], // Extract Name from the first spot in the array
-            flag: row[1] || 'default.png' // Extract Flag from the second spot
+            name: row[0], 
+            flag: row[1] || 'default.png' 
         }));
         
         existingMasters = data.existingMasters; 
         
-        // Pass ONLY the names (strings) to populate the datalist
-        
-        
         saveDraftToLocal();
         console.log("Data successfully mapped and loaded.");
-        console.log(availableGolfers)
     } catch (error) {
         console.error("Error mapping golfers:", error);
     }
 }
-
-
-
-
-
 
 /**
  * 2. INITIALIZE SERPENTINE ORDER
@@ -131,13 +121,71 @@ function initializeDraftOrder() {
 }
 
 /**
- * 3. RECORD PICK & INJECT FLAG INTO TABLE
+ * 3. CUSTOM DROPDOWN SEARCH LOGIC
+ */
+function onSearchInput() {
+    const input = document.getElementById('golfer-choice');
+    const dropdown = document.getElementById('custom-dropdown');
+    const filter = input.value.toLowerCase().trim();
+    
+    dropdown.innerHTML = '';
+
+    if (!filter) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    const matches = availableGolfers.filter(g => 
+        g.name.toLowerCase().includes(filter)
+    );
+
+    if (matches.length > 0) {
+        matches.forEach(golfer => {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+            div.style.padding = '10px';
+            div.style.cursor = 'pointer';
+            div.style.display = 'flex';
+            div.style.alignItems = 'center';
+            div.style.gap = '10px';
+            div.style.borderBottom = '1px solid #eee';
+            div.style.backgroundColor = 'white';
+
+            div.innerHTML = `
+                <img src="flags/${golfer.flag}" style="width: 20px; height: auto; border-radius: 2px;">
+                <span style="color: black;">${golfer.name}</span>
+            `;
+
+            div.onclick = () => {
+                input.value = golfer.name;
+                dropdown.style.display = 'none';
+                input.focus();
+            };
+
+            dropdown.appendChild(div);
+        });
+        dropdown.style.display = 'block';
+    } else {
+        dropdown.style.display = 'none';
+    }
+}
+
+// Close dropdown if clicked outside
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('custom-dropdown');
+    const input = document.getElementById('golfer-choice');
+    if (e.target !== input && e.target !== dropdown) {
+        dropdown.style.display = 'none';
+    }
+});
+
+/**
+ * 4. RECORD PICK & INJECT FLAG INTO TABLE
  */
 async function recordCurrentPick() {
     const golferInput = document.getElementById('golfer-choice');
     const selectedName = golferInput.value;
 
-    // Find the specific golfer object to get their flag filename
     const golferObj = availableGolfers.find(g => g.name === selectedName);
 
     if (!selectedName || !golferObj) {
@@ -152,7 +200,6 @@ async function recordCurrentPick() {
     const pickNumber = currentPickIndex + 1;
     const roundNumber = Math.floor(currentPickIndex / bettors.length) + 1;
 
-    // A. UPDATE UI TABLE WITH FLAG IMAGE
     const currentRow = document.getElementById(`pick-row-${currentPickIndex}`);
     if (currentRow) {
         const golferCell = currentRow.querySelector('.golfer-cell');
@@ -173,7 +220,6 @@ async function recordCurrentPick() {
         lastPickDisplay.innerHTML = `<strong>Last Pick:</strong> ${golferObj.name} by ${currentBettorName}`;
     }
 
-    // Prepare data for Sheets
     const pickData = {
         action: "add",
         draftMaster: document.getElementById('draftMaster').value,
@@ -181,7 +227,7 @@ async function recordCurrentPick() {
         pickNum: pickNumber,
         round: roundNumber,
         golferName: golferObj.name,
-        flag: golferObj.flag // This ensures Column G gets filled
+        flag: golferObj.flag 
     };
 
     try {
@@ -193,9 +239,7 @@ async function recordCurrentPick() {
         });
     } catch (e) { console.error(e); }
 
-    // Remove from available list
     availableGolfers = availableGolfers.filter(g => g.name !== selectedName);
-   
 
     currentPickIndex++;
     golferInput.value = '';
@@ -246,58 +290,6 @@ function loadDraftFromLocal() {
     } catch (e) { return false; }
 }
 
-function onSearchInput() {
-    const input = document.getElementById('golfer-choice');
-    const dropdown = document.getElementById('custom-dropdown');
-    const filter = input.value.toLowerCase().trim();
-    
-    // Clear previous results
-    dropdown.innerHTML = '';
-
-    // If search is empty, hide dropdown
-    if (!filter) {
-        dropdown.style.display = 'none';
-        return;
-    }
-
-    // Filter golfers by name
-    const matches = availableGolfers.filter(g => 
-        g.name.toLowerCase().includes(filter)
-    );
-
-    if (matches.length > 0) {
-        matches.forEach(golfer => {
-            const div = document.createElement('div');
-            div.className = 'dropdown-item';
-            div.style.padding = '10px';
-            div.style.cursor = 'pointer';
-            div.style.display = 'flex';
-            div.style.alignItems = 'center';
-            div.style.gap = '10px';
-            div.style.borderBottom = '1px solid #eee';
-
-            div.innerHTML = `
-                <img src="flags/${golfer.flag}" style="width: 20px; height: auto;">
-                <span>${golfer.name}</span>
-            `;
-
-            // When clicked, fill the input and hide dropdown
-            div.onclick = () => {
-                input.value = golfer.name;
-                dropdown.style.display = 'none';
-            };
-
-            dropdown.appendChild(div);
-        });
-        dropdown.style.display = 'block';
-    } else {
-        dropdown.style.display = 'none';
-    }
-}
-
-
-
-
 function refreshAllDisplays() {
     const p = currentPickIndex;
     const t = totalPicks;
@@ -309,11 +301,11 @@ function refreshAllDisplays() {
     const recordBtn = document.getElementById('record-pick-button');
     const finishBtn = document.getElementById('finish-draft-button');
     if (p >= t && t > 0) {
-        recordBtn.style.display = 'none';
-        finishBtn.style.display = 'inline-block';
+        if (recordBtn) recordBtn.style.display = 'none';
+        if (finishBtn) finishBtn.style.display = 'inline-block';
     } else {
-        recordBtn.style.display = 'inline-block';
-        finishBtn.style.display = 'none';
+        if (recordBtn) recordBtn.style.display = 'inline-block';
+        if (finishBtn) finishBtn.style.display = 'none';
     }
 }
 
@@ -356,20 +348,22 @@ async function undoLastPick(event) {
     document.getElementById('draft-board-body').innerHTML = prevState.tableHTMLSnapshot;
     document.getElementById('last-pick-display').innerHTML = prevState.lastPickHTMLSnapshot || "";
 
-    
     refreshAllDisplays();
     saveDraftToLocal(); 
     updateUndoButtonState();
 }
-document.addEventListener('click', (e) => {
-    const dropdown = document.getElementById('custom-dropdown');
-    const input = document.getElementById('golfer-choice');
-    if (e.target !== input && e.target !== dropdown) {
-        dropdown.style.display = 'none';
-    }
-});
 
+function finishAndClearDraft() {
+    if (!confirm("Are you sure you want to permanently clear the board and start fresh?")) {
+        return;
+    }
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.clear();
+    window.location.href = window.location.pathname; 
+}
 
 window.initializeDraftOrder = initializeDraftOrder;
 window.undoLastPick = undoLastPick;
 window.recordCurrentPick = recordCurrentPick;
+window.onSearchInput = onSearchInput;
+window.finishAndClearDraft = finishAndClearDraft;
