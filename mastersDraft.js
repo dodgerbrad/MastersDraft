@@ -14,6 +14,11 @@ let totalPicks = 0;
 let availableGolfers = []; // Stores objects: { name, flag }
 let draftHistory = []; 
 let existingMasters = [];
+document.addEventListener('keydown', (e) => {
+    if (e.key === "Escape") {
+        document.getElementById('custom-dropdown').style.display = 'none';
+    }
+});
 
 document.addEventListener('DOMContentLoaded', async () => {
     const restored = loadDraftFromLocal();
