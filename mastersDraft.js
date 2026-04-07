@@ -43,7 +43,7 @@ async function fetchGolfers() {
         const response = await fetch(SCRIPT_URL + "?page=draft");
         const data = await response.json();
         
-        // Maps [[Name, Flag], ...] to [{name: Name, flag: Flag}, ...]
+        // Convert [["Rory", "eng.png"], ...] into [{name: "Rory", flag: "eng.png"}, ...]
         availableGolfers = data.golfers.map(row => ({
             name: row[0],
             flag: row[1] || 'default.png'
@@ -51,16 +51,15 @@ async function fetchGolfers() {
         
         existingMasters = data.existingMasters; 
         
-        // Pass ONLY the names to populate the dropdown
+        // Pass ONLY the names to the datalist
         populateDatalist(availableGolfers.map(g => g.name));
         
         saveDraftToLocal();
-        console.log("Data fetched successfully.");
-        console.log(data.golfers);
     } catch (error) {
-        console.error("Error fetching golfers:", error);
+        console.error("Error fetching data:", error);
     }
 }
+
 
 
 
