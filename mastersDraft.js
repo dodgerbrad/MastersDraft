@@ -279,6 +279,77 @@ function finishAndClearDraft() {
     localStorage.clear();
     window.location.href = window.location.pathname; 
 }
+async function recordCurrentPick() {
+    const golferInput = document.getElementById('golfer-choice');
+    const selectedName = golferInput.value.trim();
+
+    // 1. Find the golfer in our master list to get their flag
+    const golferObj = availableGolfers.find(g => g.name === selectedName);
+
+    if (!selectedName || !golferObj) {
+        alert("Please select a valid golfer from the list.");
+        return;
+    }
+
+    // 2. Prevent double-clicking
+    setRecordButtonState(true);
+    saveStateToHistory();
+
+    const currentBettorName = draftOrder[currentPickIndex];
+    const pickNumber = currentPickIndex + 1;
+    const roundNumber = Math.floor(currentPickIndex / bettors.length) + 1;
+
+    // 3. Update the UI Table with the flag and name
+    const currentRow = document.getElementById(`pick-row-${currentPickIndex}`);
+    if (currentRow) {
+        const golferCell = currentRow.querySelector('.golfer-cell');
+        if (golferCell) {
+            golferCell.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="flags/${golferObj.flag}" onerror="this.src='flags/default.png'" style="width: 20px; height: auto;">
+                    <span>${golferObj.name}</span>
+                </div>
+            `;
+        }
+        currentRow.classList.add('completed-pick');
+        currentRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // 4. Prepare data for Google Sheets
+    const pickData = {
+        action: "add",
+        draftMaster: document.getElementById('draftMaster').value,
+        bettorName: currentBettorName,
+        pickNum: pickNumber,
+        round: roundNumber,
+        golferName: golferObj.name,
+        flag: golferObj.flag 
+    };
+
+    // 5. Post to Google
+    try {
+        await fetch(SCRIPT_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(pickData)
+        });
+    } catch (e) { console.error("Post failed:", e); }
+
+    // 6. Remove drafted golfer from the search list
+    availableGolfers = availableGolfers.filter(g => g.name !== selectedName);
+
+    // 7. Advance the draft
+    currentPickIndex++;
+    golferInput.value = '';
+    
+    refreshAllDisplays();
+    setRecordButtonState(false);
+    updateUndoButtonState();
+    saveDraftToLocal();
+    golferInput.focus();
+}
+
 
 window.recordCurrentPick = recordCurrentPick;
 window.onSearchInput = onSearchInput;
