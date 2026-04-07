@@ -56,6 +56,7 @@ async function fetchGolfers() {
         
         saveDraftToLocal();
         console.log("Data fetched successfully.");
+        console.log(data.golfers);
     } catch (error) {
         console.error("Error fetching golfers:", error);
     }
