@@ -43,22 +43,24 @@ async function fetchGolfers() {
         const response = await fetch(SCRIPT_URL + "?page=draft");
         const data = await response.json();
         
-        // Convert [["Rory", "eng.png"], ...] into [{name: "Rory", flag: "eng.png"}, ...]
+        // Map the Array(2) to the object format our script uses
         availableGolfers = data.golfers.map(row => ({
-            name: row[0],
-            flag: row[1] || 'default.png'
+            name: row[0], // Extract Name from the first spot in the array
+            flag: row[1] || 'default.png' // Extract Flag from the second spot
         }));
         
         existingMasters = data.existingMasters; 
         
-        // Pass ONLY the names to the datalist
+        // Pass ONLY the names (strings) to populate the datalist
         populateDatalist(availableGolfers.map(g => g.name));
         
         saveDraftToLocal();
+        console.log("Data successfully mapped and loaded.");
     } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error mapping golfers:", error);
     }
 }
+
 
 
 
