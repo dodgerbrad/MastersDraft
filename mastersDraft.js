@@ -361,6 +361,14 @@ async function undoLastPick(event) {
     saveDraftToLocal(); 
     updateUndoButtonState();
 }
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('custom-dropdown');
+    const input = document.getElementById('golfer-choice');
+    if (e.target !== input && e.target !== dropdown) {
+        dropdown.style.display = 'none';
+    }
+});
+
 
 window.initializeDraftOrder = initializeDraftOrder;
 window.undoLastPick = undoLastPick;
