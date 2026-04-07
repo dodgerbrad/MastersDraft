@@ -43,7 +43,7 @@ async function fetchGolfers() {
         const response = await fetch(SCRIPT_URL + "?page=draft");
         const data = await response.json();
         
-        // Map the array of arrays from Apps Script into objects
+        // row[0] = Name, row[1] = Flag filename
         availableGolfers = data.golfers.map(row => ({
             name: row[0],
             flag: row[1] || 'default.png'
@@ -51,12 +51,14 @@ async function fetchGolfers() {
         
         existingMasters = data.existingMasters; 
         
+        // Important: Populate with the .name property
         populateDatalist(availableGolfers.map(g => g.name));
         saveDraftToLocal();
     } catch (error) {
         console.error("Error fetching data:", error);
     }
 }
+
 
 /**
  * 2. INITIALIZE SERPENTINE ORDER
