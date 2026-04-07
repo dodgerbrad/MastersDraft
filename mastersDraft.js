@@ -246,20 +246,55 @@ function loadDraftFromLocal() {
     } catch (e) { return false; }
 }
 
-function populateDatalist(names) {
-    const datalist = document.getElementById('golfer-names');
-    if (!datalist) return;
+function onSearchInput() {
+    const input = document.getElementById('golfer-choice');
+    const dropdown = document.getElementById('custom-dropdown');
+    const filter = input.value.toLowerCase().trim();
     
-    datalist.innerHTML = ''; // Clear old "ghost" options
-    
-    names.forEach(name => {
-        if (name) {
-            let option = document.createElement('option');
-            option.value = name; // This MUST be set for the name to appear
-            datalist.appendChild(option);
-        }
-    });
+    // Clear previous results
+    dropdown.innerHTML = '';
+
+    // If search is empty, hide dropdown
+    if (!filter) {
+        dropdown.style.display = 'none';
+        return;
+    }
+
+    // Filter golfers by name
+    const matches = availableGolfers.filter(g => 
+        g.name.toLowerCase().includes(filter)
+    );
+
+    if (matches.length > 0) {
+        matches.forEach(golfer => {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+            div.style.padding = '10px';
+            div.style.cursor = 'pointer';
+            div.style.display = 'flex';
+            div.style.alignItems = 'center';
+            div.style.gap = '10px';
+            div.style.borderBottom = '1px solid #eee';
+
+            div.innerHTML = `
+                <img src="flags/${golfer.flag}" style="width: 20px; height: auto;">
+                <span>${golfer.name}</span>
+            `;
+
+            // When clicked, fill the input and hide dropdown
+            div.onclick = () => {
+                input.value = golfer.name;
+                dropdown.style.display = 'none';
+            };
+
+            dropdown.appendChild(div);
+        });
+        dropdown.style.display = 'block';
+    } else {
+        dropdown.style.display = 'none';
+    }
 }
+
 
 
 
