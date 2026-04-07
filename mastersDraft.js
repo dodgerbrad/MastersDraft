@@ -246,13 +246,15 @@ function loadDraftFromLocal() {
 function populateDatalist(names) {
     const datalist = document.getElementById('golfer-names');
     if (!datalist) return;
-    datalist.innerHTML = '';
+    datalist.innerHTML = ''; // Clear old entries
+    
     names.forEach(name => {
         let option = document.createElement('option');
-        option.value = name;
+        option.value = name; // This is what shows in the dropdown
         datalist.appendChild(option);
     });
 }
+
 
 function refreshAllDisplays() {
     const p = currentPickIndex;
