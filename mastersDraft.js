@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (restored && bettors.length > 0) {
         setup.style.display = 'none';
         draft.style.display = 'block';
-        populateDatalist(availableGolfers.map(g => g.name));
+        
         updateUndoButtonState();
         refreshAllDisplays();
     } else {
@@ -52,7 +52,7 @@ async function fetchGolfers() {
         existingMasters = data.existingMasters; 
         
         // Pass ONLY the names (strings) to populate the datalist
-        populateDatalist(availableGolfers.map(g => g.name));
+        
         
         saveDraftToLocal();
         console.log("Data successfully mapped and loaded.");
@@ -195,7 +195,7 @@ async function recordCurrentPick() {
 
     // Remove from available list
     availableGolfers = availableGolfers.filter(g => g.name !== selectedName);
-    populateDatalist(availableGolfers.map(g => g.name));
+   
 
     currentPickIndex++;
     golferInput.value = '';
@@ -356,7 +356,7 @@ async function undoLastPick(event) {
     document.getElementById('draft-board-body').innerHTML = prevState.tableHTMLSnapshot;
     document.getElementById('last-pick-display').innerHTML = prevState.lastPickHTMLSnapshot || "";
 
-    populateDatalist(availableGolfers.map(g => g.name));
+    
     refreshAllDisplays();
     saveDraftToLocal(); 
     updateUndoButtonState();
