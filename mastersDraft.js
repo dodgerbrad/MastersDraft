@@ -56,6 +56,7 @@ async function fetchGolfers() {
         
         saveDraftToLocal();
         console.log("Data successfully mapped and loaded.");
+        console.log(availableGolfers)
     } catch (error) {
         console.error("Error mapping golfers:", error);
     }
