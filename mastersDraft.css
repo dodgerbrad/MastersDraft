@@ -117,3 +117,29 @@ input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 #draft-board-body tr {
   scroll-margin-top: 300px; /* Keep this here as well */
 }
+
+.search-wrapper { position: relative; width: 100%; }
+
+.dropdown-content {
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    z-index: 2000;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    cursor: pointer;
+    gap: 12px;
+}
+
+.dropdown-item:hover { background-color: #f1f1f1; }
+
+.dropdown-item img { width: 24px; height: auto; }
+
